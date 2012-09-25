@@ -5,8 +5,8 @@
 # The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-# Description: Parallel processing of ssh commands with xargs
-# Github URL: https://gist.github.com/3780799
+# Description: Parallel processing of SSH commands with xargs
+# Github gist URL: https://gist.github.com/3780799
 # License: MIT
 
 parse-args() {
@@ -25,18 +25,23 @@ parse-args() {
 xargs-ssh() {
   # The default command is uptime
   command="uptime"
-  # If a second argument is passed, save everything but the first argument as the command to be sent over ssh
+  # Fancy colors in terminal output for increased legibility
+  bluetxt=$(tput setaf 4)
+  normaltxt=$(tput sgr0)
+  boldtxt=$(tput bold)
+  # If a second argument is passed, save everything but the first argument as the command to be sent over SSH
   [[ ! -z "$2" ]] && command="$(echo $@ | sed 's/^[^ ]* //')"
+  # Either use a file or stdin to get a list of servers
   if [[ "$serverfile" -eq "1" ]]; then
     # Connect to all servers in parallel and run $command
-    # Fancy colors in terminal output for increased legibility
-    bluetxt=$(tput setaf 4)
-    normaltxt=$(tput sgr0)
-    boldtxt=$(tput bold)
     xargs -a $1 -I"SERVER" -P0 -n1 sh -c "printf \"\n###### ${bluetxt}${boldtxt}SERVER${normaltxt} ######\n\$(ssh SERVER \"$command\")\n\""
   else
-    echo "Reading from stdin is not yet implemented" >&2
-    exit 1
+    serverlist=""
+    while read data; do
+      serverlist=$(echo "$serverlist;$data")
+    done
+    # Connect to all servers in parallel and run $command
+    echo $serverlist | tr ';' '\n' | xargs -I"SERVER" -P0 -n1 sh -c "printf \"\n###### ${bluetxt}${boldtxt}SERVER${normaltxt} ######\n\$(ssh SERVER \"$command\")\n\""
   fi
 }
 
