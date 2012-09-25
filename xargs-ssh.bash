@@ -21,13 +21,13 @@ xargs-ssh() {
   [[ ! -z "$2" ]] && command="$(echo $@ | sed 's/^[^ ]* //')"
   if [[ "$serverfile" -eq "1" ]]; then
     # connect to all servers in parallel and run $command
-    xargs -a $1 -I"SERVER" -P0 -n1 sh -c "ssh SERVER \"$command\" | sed \"s/^/SERVER: /\""
+    xargs -a $1 -I"SERVER" -P0 -n1 sh -c "echo \"\$(ssh SERVER \"$command\")\" | sed \"s/^$/[no output]/;s/^/SERVER: /\""
   else
     echo "Reading from stdin is not yet implemented" >&2
     exit 1
   fi
 }
 
-# go through the functions
+# Parse the arguments and run the xargs-ssh function
 parse-args $1
 xargs-ssh $@
