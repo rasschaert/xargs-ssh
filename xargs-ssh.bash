@@ -34,14 +34,14 @@ xargs-ssh() {
   # Either use a file or stdin to get a list of servers
   if [[ "$serverfile" -eq "1" ]]; then
     # Connect to all servers in parallel and run $command
-    xargs -a $1 -I"SERVER" -P0 -n1 sh -c "printf \"\n###### ${bluetxt}${boldtxt}SERVER${normaltxt} ######\n\$(ssh SERVER \"$command\")\n\""
+    xargs -a $1 -I"SERVER" -P0 -n1 sh -c "printf \"\n###### ${bluetxt}${boldtxt}SERVER${normaltxt} ######\n\$(ssh SERVER \"$command\" 2>&1)\n\""
   else
     serverlist=""
     while read data; do
       serverlist=$(echo "$serverlist;$data")
     done
     # Connect to all servers in parallel and run $command
-    echo $serverlist | tr ';' '\n' | xargs -I"SERVER" -P0 -n1 sh -c "printf \"\n###### ${bluetxt}${boldtxt}SERVER${normaltxt} ######\n\$(ssh SERVER \"$command\")\n\""
+    echo $serverlist | tr ';' '\n' | xargs -I"SERVER" -P0 -n1 sh -c "printf \"\n###### ${bluetxt}${boldtxt}SERVER${normaltxt} ######\n\$(ssh SERVER \"$command\" 2>&1)\n\""
   fi
 }
 
