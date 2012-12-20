@@ -16,31 +16,23 @@ parse-args() {
     exit 1
   # If the - option is passed, use stdin for input
   elif [[ "$1" == "-" ]]; then
-    serverfile="0"
+    tempfile=$(mktemp)
+    while read data; do
+      echo $data >> $tempfile
+    done
+    serverlist=$tempfile
   else
-    serverfile="1"
+    serverlist=$1
   fi
 }
 
 xargs-ssh() {
-  # The default command is uptime                                                                                                                                                                    
+  # The default command is uptime
   command="uptime"
-  # Count the number of "CPU's" or hyperthreads on this machine
-  threads="$(awk '/^processor/ {cpu++} END {print cpu}' /proc/cpuinfo)"
   # If a second argument is passed, save everything but the first argument as the command to be sent over SSH
   [[ ! -z "$2" ]] && command="$(echo $@ | sed 's/^[^ ]* //')"
-  # Either use a file or stdin to get a list of servers
-  if [[ "$serverfile" -eq "1" ]]; then
-    # Connect to all servers in parallel and run $command
-    xargs -a $1 -I"SERVER" -P${threads} -n1 sh -c "printf \"\n###### SERVER ######\n\$(ssh SERVER \"$command\" 2>&1)\n\""
-  else
-    serverlist=""
-    while read data; do
-      serverlist=$(echo "$serverlist;$data")
-    done
-    # Connect to all servers in parallel and run $command
-    echo $serverlist | tr ';' '\n' | xargs -I"SERVER" -P${threads} -n1 sh -c "printf \"\n###### SERVER ######\n\$(ssh SERVER \"$command\" 2>&1)\n\""
-  fi
+  # Connect to all servers in parallel and run $command
+  xargs -a $serverlist -I"SERVER" -P0 -n1 sh -c "printf \"\n###### SERVER ######\n\$(ssh SERVER \"$command\")\n\""
 }
 
 # Parse the arguments and run the xargs-ssh function
