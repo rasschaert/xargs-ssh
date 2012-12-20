@@ -27,23 +27,19 @@ xargs-ssh() {
   command="uptime"
   # Count the number of "CPU's" or hyperthreads on this machine
   threads="$(awk '/^processor/ {cpu++} END {print cpu}' /proc/cpuinfo)"
-  # Fancy colors in terminal output for increased legibility
-  bluetxt=$(tput setaf 4)
-  normaltxt=$(tput sgr0)
-  boldtxt=$(tput bold)
   # If a second argument is passed, save everything but the first argument as the command to be sent over SSH
   [[ ! -z "$2" ]] && command="$(echo $@ | sed 's/^[^ ]* //')"
   # Either use a file or stdin to get a list of servers
   if [[ "$serverfile" -eq "1" ]]; then
     # Connect to all servers in parallel and run $command
-    xargs -a $1 -I"SERVER" -P${threads} -n1 sh -c "printf \"\n###### ${bluetxt}${boldtxt}SERVER${normaltxt} ######\n\$(ssh SERVER \"$command\" 2>&1)\n\""
+    xargs -a $1 -I"SERVER" -P${threads} -n1 sh -c "printf \"\n###### SERVER ######\n\$(ssh SERVER \"$command\" 2>&1)\n\""
   else
     serverlist=""
     while read data; do
       serverlist=$(echo "$serverlist;$data")
     done
     # Connect to all servers in parallel and run $command
-    echo $serverlist | tr ';' '\n' | xargs -I"SERVER" -P${threads} -n1 sh -c "printf \"\n###### ${bluetxt}${boldtxt}SERVER${normaltxt} ######\n\$(ssh SERVER \"$command\" 2>&1)\n\""
+    echo $serverlist | tr ';' '\n' | xargs -I"SERVER" -P${threads} -n1 sh -c "printf \"\n###### SERVER ######\n\$(ssh SERVER \"$command\" 2>&1)\n\""
   fi
 }
 
