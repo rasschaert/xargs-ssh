@@ -12,7 +12,7 @@
 parse-args() {
   # If no argument is passed, show the user how to use this script
   if [[ -z "$1" ]]; then
-    echo "Usage: $0 {filelist | - } [command]" >&2
+    echo "Usage: $0 { file | - } [command]" >&2
     exit 1
   # If the - option is passed, use stdin for input
   elif [[ "$1" == "-" ]]; then
