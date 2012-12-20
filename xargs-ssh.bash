@@ -12,14 +12,15 @@
 scriptmode=0
 command="uptime"
 input=""
+serverlist=""
 
 # Parse command line options
-while getopts "hsi:c:" flag
+while getopts "hsf:c:" flag
 do
   # Print usage information if the -h flag is invoked
   if [[ "$flag" == "h" ]]; then
-    echo "Usage: $0 -i <input> [-c <command>] [-h] [-s]"
-    echo "  -i specifies the input source. Use -i filename to read from a file or -i - to use stdin. This is a mandatory option."
+    echo "Usage: $0 [-f <file>] [-c <command>] [-h] [-s]"
+    echo "  -f specifies the input file. Use -f filename to read from a file. If no file is specified, stdin is used."
     echo "  -c lets you specify a command to run on each server. By default this command is \"uptime\"."
     echo "  -s enables script mode, which keeps the output for each server on one line."
     echo "  -h prints this help message."
@@ -30,28 +31,19 @@ do
   # A command is being specified if the -c flag is invoked
   elif [[ "$flag" == "c" ]]; then
     command="$OPTARG"
-  # An input source is specified if the -i flag is invoked
-  elif [[ "$flag" == "i" ]]; then
-    input=$OPTARG
-    # If the input source is "-", use stdin
-    if [[ "$input" == "-" ]]; then
-      # Create a temporary file to save the serverlist in
-      tempfile=$(mktemp)
-      while read data; do
-        echo $data >> $tempfile
-      done
-      serverlist=$tempfile
-    # Else use the filename specified as input source
-    else
-      serverlist=$input
-    fi
+  # An input file is specified if the -f flag is invoked
+  elif [[ "$flag" == "f" ]]; then
+    serverlist=$OPTARG
   fi
 done
 
-# The -i option is mandatory
+# If no input file is specified, use stdin
 if [[ -z "$serverlist" ]]; then
-  echo "No input specified! Use -i filename or -i - to read from stdin."
-  exit 1
+  tempfile=$(mktemp)
+  while read data; do
+    echo $data >> $tempfile
+  done
+  serverlist=$tempfile
 fi
 
 # Count the number of "CPU's" or hyperthreads on this machine
