@@ -54,7 +54,7 @@ if [[ "$scriptmode" == 0 ]]; then
   cmd="{ printf \"###### ${bluetxt}${boldtxt}SERVER${normaltxt} ######\n\$(ssh SERVER \"$command\" 2>&1)\n\n\"; }"
 # If scriptmode is specified, format the output so that the output of each server is on one easiliy parsed line
 else
-  cmd="{ printf \"SERVER: \$(ssh SERVER \"$command\" 2>&1)\" | perl -i -p -e 's/\n/\\\n/'; echo; }"
+  cmd="{ printf \"SERVER: \$(ssh SERVER \"$command\" 2>&1)\" | sed 's/$/\\\n/' | tr -d '\n' | sed 's/\\\n$/\n/'; }"
 fi
 
 # Use xargs for parallelism, use as many threads as the CPU supports
