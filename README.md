@@ -30,11 +30,7 @@ These are all tools that are commonly found on any GNU/Linux system.
 
 Usage:
 ------
-./xargs-ssh.bash [-f <file>] [-c <command>] [-h] [-s]
-  -f specifies the input file. Use -f filename to read from a file. If no file is specified, stdin is used.
-  -c lets you specify a command to run on each server. By default this command is "uptime".
-  -s enables script mode, which keeps the output for each server on one line.
-  -h prints this help message.
+Either pipe a line-separated list of servers to xargs-ssh, or provide a file with the list with the -f option. You may optionally specifiy a command to run with the -c option and enable easily parsable output with the -s option.
 
 <table>
   <tr>
@@ -47,7 +43,7 @@ Usage:
     <td>-c</td><td>command</td><td>lets you specify a command to run on each server. By default this command is "uptime".</td>
   </tr>
   <tr>
-    <td>-s</td><td>n/a</td><td>enables script mode, which keeps the output for each server on one line.</td>
+    <td>-s</td><td>n/a</td><td>enables script mode, which keeps the output for each server on one line, new lines in the output are separated by "\n":</td>
   </tr>
   <tr>
     <td>-h</td><td>n/a</td><td>prints help message that explains how to use the script.</td>
@@ -56,9 +52,15 @@ Usage:
 
 Examples:
 ---------
+Basic usage of the script using a list of servers in a file:
 ````bash
 ./xargs-ssh.bash -f /home/kenny/serverlist.txt
 ````
+An example of piping data to the script:
+````bash
+for i in {1..4}; do echo server$i; done | ./xargs-ssh.bash
+````
+These two commands would have the same output:
 <pre>
 ---------
 ###### server3 ######
@@ -74,9 +76,12 @@ Examples:
  05:28:35 up 76 days, 12:29,  0 users,  load average: 0.00, 0.00, 0.00
 </pre>
 
+
+Specify a custom command and enable script mode:
 ````bash
-./xargs-ssh.bash -f /home/kenny/serverlist.txt -c "hostname --fqdn" -s
+./xargs-ssh.bash -f /home/kenny/serverlist.txt -c "hostname --fqdn && uptime" -s
 ````
+The output of each individual ssh reduced to one line of output, where new lines in the output are separated by "\n":
 <pre>
 server4: server4.customer.local\n 11:31:22 up 153 days, 22:44,  1 user,  load average: 0.00, 0.00, 0.00
 server1: server1.customer.local\n 05:28:35 up 76 days, 12:29,  0 users,  load average: 0.00, 0.00, 0.00
