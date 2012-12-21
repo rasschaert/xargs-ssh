@@ -6,7 +6,7 @@ This simple bash script runs multiple ssh commands in parallel by leveraging the
 There are already a number of tools available to run ssh in parallel:
 * [pssh](http://www.theether.org/pssh/)
 * [sshpt](http://code.google.com/p/sshpt/)
-* [clusterssh](http://clusterssh.sourceforge.net/)
+* [ClusterSSH](http://clusterssh.sourceforge.net/)
 * [Capistrano](http://capistranorb.com/)
 * [Fabric](http://fabfile.org/)
 * [Func](https://fedorahosted.org/func/)
@@ -62,7 +62,6 @@ for i in {1..4}; do echo server$i; done | ./xargs-ssh.bash
 ````
 These two commands would have the same output:
 <pre>
----------
 ###### server3 ######
  11:31:22 up 34 days, 17:09,  2 users,  load average: 0.00, 0.00, 0.00
 

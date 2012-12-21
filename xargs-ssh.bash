@@ -10,26 +10,25 @@ input=""
 serverlist=""
 
 # Parse command line options
-while getopts "hsf:c:" flag
-do
-  # Print usage information if the -h flag is invoked
-  if [[ "$flag" == "h" ]]; then
-    echo "Usage: $0 [-f <file>] [-c <command>] [-h] [-s]"
-    echo "  -f specifies the input file. Use -f filename to read from a file. If no file is specified, stdin is used."
-    echo "  -c lets you specify a command to run on each server. By default this command is \"uptime\"."
-    echo "  -s enables script mode, which keeps the output for each server on one line."
-    echo "  -h prints this help message."
-    exit 0
-  # Enable script mode if the -s flag is invoked
-  elif [[ "$flag" == "s" ]]; then
-    scriptmode=1
-  # A command is being specified if the -c flag is invoked
-  elif [[ "$flag" == "c" ]]; then
-    command="$OPTARG"
-  # An input file is specified if the -f flag is invoked
-  elif [[ "$flag" == "f" ]]; then
-    serverlist=$OPTARG
-  fi
+while getopts "hsf:c:" flag; do
+  case "$flag" in
+    h)  echo "Usage: $0 [-f <file>] [-c <command>] [-h] [-s]"
+        echo "  -f specifies the input file. Use -f filename to read from a file. If no file is specified, stdin is used."
+        echo "  -c lets you specify a command to run on each server. By default this command is \"uptime\"."
+        echo "  -s enables script mode, which keeps the output for each server on one line."
+        echo "  -h prints this help message."
+        exit 0
+        ;;
+    s)  scriptmode=1
+        ;;
+    f)  serverlist=$OPTARG
+        ;;
+    c)  command="$OPTARG"
+        ;;
+    *)  echo "Unknown option \"$flag\"." >&2
+        exit 1
+        ;;
+  esac
 done
 
 # If no input file is specified, use stdin
