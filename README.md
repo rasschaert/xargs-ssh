@@ -11,7 +11,7 @@ There are already a number of tools available to run ssh in parallel:
 * [Fabric](http://fabfile.org/)
 * [Func](https://fedorahosted.org/func/)
 
-These tools all have numerous advantages and features that this simple script doesn't. The single advantage that xarg-ssh has over these alternatives is that it's just a bash script that you can run.
+These tools all have numerous advantages and features that this simple script doesn't. The single advantage that xarg-ssh has over these alternatives is that it's just a bash script that you can run without having to install anything new on either server or client.
 
 Dependencies:
 -------------
