@@ -25,8 +25,7 @@ while getopts "hsf:c:" flag; do
         ;;
     c)  command="$OPTARG"
         ;;
-    *)  echo "Unknown option \"$flag\"." >&2
-        exit 1
+    *)  exit 1
         ;;
   esac
 done
@@ -47,6 +46,9 @@ threads="$(awk '/^processor/ {cpu++} END {print cpu}' /proc/cpuinfo)"
 bluetxt=$(tput setaf 4)
 normaltxt=$(tput sgr0)
 boldtxt=$(tput bold)
+
+# This is where the command is encapsulated in a printf statement.
+# Doing this makes sure that the output of each server will remain together.
 
 # If scriptmode is not specified, format the output in a pretty and legible way
 if [[ "$scriptmode" == 0 ]]; then
