@@ -36,6 +36,7 @@ This script only works on Linux. The following tools are needed to run xargs-ssh
 * find
 * POSIX shell (also known as "sh")
 * printf
+
 These are all tools that are commonly found on any GNU/Linux system.  
 
 The versions of xargs and mktemp on OSX (the BSD versions) behave very differently to their Linux counterparts. I could adapt this script to work on OSX, but since I personally intend to use this only on Linux (I don't even own a Mac), I probably won't.  
