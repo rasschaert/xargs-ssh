@@ -52,10 +52,10 @@ boldtxt=$(tput bold)
 
 # If scriptmode is not specified, format the output in a pretty and legible way
 if [[ "$scriptmode" == 0 ]]; then
-  cmd="{ printf \"###### ${bluetxt}${boldtxt}SERVER${normaltxt} ######\n\$(ssh SERVER \"$command\" 2>&1)\n\n\"; }"
+  cmd="{ printf \"###### ${bluetxt}${boldtxt}SERVER${normaltxt} ######\n\$(ssh -o ConnectTimeout=3 SERVER \"$command\" 2>&1)\n\n\"; }"
 # If scriptmode is specified, format the output so that the output of each server is on one easiliy parsed line
 else
-  cmd="{ printf \"SERVER: \$(ssh SERVER \"$command\" 2>&1)\" | sed 's/$/\\\n/' | tr -d '\n' | sed 's/\\\n$/\n/'; }"
+  cmd="{ printf \"SERVER: \$(ssh -o ConnectTimeout=3 SERVER \"$command\" 2>&1)\" | sed 's/$/\\\n/' | tr -d '\n' | sed 's/\\\n$/\n/'; }"
 fi
 
 # Use xargs for parallelism, use as many threads as the CPU supports
