@@ -51,6 +51,7 @@ BSD mktemp requires a bit more effort to create a random file in /tmp/, but that
 Usage:
 ------
 Either pipe a line-separated list of servers to xargs-ssh, or provide a file with the list with the -f option. You may optionally specifiy a command to run with the -c option and enable easily parsable output with the -s option.
+If server list is not provided, no -f option neither pipe, the script runs the command interactively as each server is typed (end with Ctrl-D).
 
 <table>
   <tr>
